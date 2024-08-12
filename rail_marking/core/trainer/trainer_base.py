@@ -84,7 +84,7 @@ class TrainerBase:
     def resume_checkpoint(self, resume_path):
         resume_path = str(resume_path)
 
-        checkpoint = torch.load(resume_path)
+        checkpoint = torch.load(resume_path, map_location=torch.device('cpu'))
         self._start_epoch = checkpoint["epoch"] + 1
 
         self._model.load_state_dict(checkpoint["state_dict"])

@@ -20,7 +20,7 @@ class RailtrackSegmentationHandler:
 
         self._data_config = Rs19DatasetConfig()
         self._model = BiSeNetV2(n_classes=self._data_config.num_classes)
-        self._model.load_state_dict(torch.load(path_to_snapshot)["state_dict"])
+        self._model.load_state_dict(torch.load(path_to_snapshot, map_location=torch.device('cpu'))["state_dict"])
         self._model.eval()
 
         if torch.cuda.is_available():
@@ -49,7 +49,8 @@ class RailtrackSegmentationHandler:
 
         if not only_mask:
             color_mask = np.array(self._data_config.RS19_COLORS)[mask]
-            overlay = (((1 - self._overlay_alpha) * overlay) + (self._overlay_alpha * color_mask)).astype("uint8")
+            # overlay = (((1 - self._overlay_alpha) * overlay) + (self._overlay_alpha * color_mask)).astype("uint8")
+            overlay = color_mask.astype("uint8")
             overlay = cv2.resize(overlay, (orig_width, orig_height))
             return mask, overlay
 
